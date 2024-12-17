@@ -1,0 +1,507 @@
+%%
+%% This is file `sample-sigconf.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% samples.dtx  (with options: `all,proceedings,bibtex,sigconf')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from sample-sigconf.tex.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file samples.dtx.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+%%
+%%
+%% Commands for TeXCount
+%TC:macro \cite [option:text,text]
+%TC:macro \citep [option:text,text]
+%TC:macro \citet [option:text,text]
+%TC:envir table 0 1
+%TC:envir table* 0 1
+%TC:envir tabular [ignore] word
+%TC:envir displaymath 0 word
+%TC:envir math 0 word
+%TC:envir comment 0 0
+%%
+%% The first command in your LaTeX source must be the \documentclass
+%% command.
+%%
+%% For submission and review of your manuscript please change the
+%% command to \documentclass[manuscript, screen, review]{acmart}.
+%%
+%% When submitting camera ready or to TAPS, please change the command
+%% to \documentclass[sigconf]{acmart} or whichever template is required
+%% for your publication.
+%%
+%%
+\documentclass[sigconf]{acmart}
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    Bib\TeX}}}
+
+%% Rights management information.  This information is sent to you
+%% when you complete the rights form.  These commands have SAMPLE
+%% values in them; it is your responsibility as an author to replace
+%% the commands and values with those provided to you when you
+%% complete the rights form.
+\setcopyright{acmlicensed}
+\copyrightyear{2018}
+\acmYear{2018}
+\acmDOI{XXXXXXX.XXXXXXX}
+%% These commands are for a PROCEEDINGS abstract or paper.
+\acmConference[15-463 Final Project]{Make sure to enter the correct
+  conference title from your rights confirmation emai}{December 2024}{Pittsburgh, PA}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{\operatorname*{arg\,min}}
+
+
+\settopmatter{printacmref=false} % Removes the conference/copyright info
+\renewcommand\footnotetextcopyrightpermission[1]{} % Removes the copyright permission footnote
+%% end of the preamble, start of the body of the document source.
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{fancyhdr}
+
+\begin{document}
+% Remove the default "empty" page style
+\setlength{\footskip}{0.2in}  % Default is usually around 0.5in
+\pagestyle{plain}
+
+% If you want page numbers at the bottom center (recommended for ACM style)
+\fancypagestyle{plain}{
+  \fancyhf{} % Clear all headers/footers
+  \fancyfoot[C]{\large\thepage} % Add page number to center footer
+  \renewcommand{\headrulewidth}{0pt} % Remove header rule
+  \renewcommand{\footrulewidth}{0pt} % Remove footer rule
+}
+
+% Make sure you have the fancyhdr package loaded in the preamble
+
+%% The "title" command has an optional parameter,
+%% allowing the author to define a "short title" to be used in page headers.
+\title{Extending the Lifetime of Broken Mobile Phone Lenses Through Deconvolution}
+
+
+\author{Felipe Zanforlin Mautner}
+\affiliation{%
+  \institution{Carnegie Mellon University}
+  \city{Pittsburgh}
+  \state{PA}
+  \country{United States}}
+\email{fmautner@andrew.cmu.edu}
+
+
+
+%%
+%% By default, the full list of authors will be used in the page
+%% headers. Often, this list is too long, and will overlap
+%% other information printed in the page headers. This command allows
+%% the author to define a more concise list
+%% of authors' names for this purpose.
+\renewcommand{\shortauthors}{Felipe Mautner}
+
+%%
+%% The abstract is a short summary of the work to be presented in the
+%% article.
+\begin{abstract}
+%   explain whyh simple lenses suck. Explain how by knowing exactly how they suck (i.e. with the PSFs) we can recover good images through deconvolution. This project surveys different deconvolution techniques, mainly, ADMM and Primial-Dual (obv develop this more) and applies them to a phone camera with a broken lens,
+Smartphone camera lenses can crack at seemingly random times and for no good reason, and repairing these cameras through official channels can be prohibitively expensive\footnote{See Apple's repair cost estimates for different IPhone models \url{https://support.apple.com/iphone/repair}}. These cracks can turn sophisticated lenses into single element simple lenses, resulting in blurry images that render the camera essentially unusable. This project implements and compares different deconvolution techniques to retrieve high quality images from damaged lenses.
+
+% the techniques presented by Heide et al.\ in ``High-Quality Computational Imaging Through Simple Lenses''~\cite{simplelens} and (ADMM REFERENCE) to restore acceptable image quality from damaged lenses at no additional cost to the end user.
+\end{abstract}
+
+%%
+%% Keywords. The author(s) should pick words that accurately describe
+%% the work being presented. Separate the keywords with commas.
+\keywords{Aberration, Fourier Transform, Deconvolution, Point Spread Function (PSF), Alternating-Direction Method of Multipliers (ADMM), Douglas-Rachford Splitting.}
+%% A "teaser" image appears between the author and affiliation
+%% information and the body of the document, and typically spans the
+%% page.
+\begin{teaserfigure}
+  \includegraphics[width=\textwidth]{figs/temp_teaser.png}
+  \caption{Temporary teaser image}
+  \Description{Pipeline demonstration}
+  \label{fig:teaser}
+\end{teaserfigure}
+
+
+%%
+%% This command processes the author and affiliation and title
+%% information and builds the first part of the formatted document.
+\maketitle
+
+\section{Introduction}
+% cover the basics fo why simple lenses are problematic, assumptions made and how those assumptions allow us to correct these issues. Phone cameras are a particularly interesting case as lenses may be broken but instead of rendered useless, they turn into simple cameras.
+Modern lens designs employ multiple optical elements that work in concert to minimize aberrations inherent to spherical lenses. These aberrations include chromatic aberration, where different wavelengths of light focus at different distances, and spherical aberration, where light rays passing through different zones of the lens focus at different points. While high-end photographic lenses use numerous elements to correct these issues, they consequently become bulky and expensive.
+
+Mobile phone cameras represent a different design paradigm, where space and cost constraints necessitate simpler lens constructions. While these lenses have seen remarkable improvements in quality over the past decade, their simplified design and exposed position make them particularly vulnerable to damage. When a phone's lens is cracked or scratched, the carefully engineered multi-element system can effectively degrade into a simple single-element lens, introducing significant aberrations. These aberrations typically manifest non-uniformly across the image, resulting in a spatially-variant Point Spread Function (PSF), where different regions of the image exhibit distinct blur patterns based on their position relative to the optical axis.
+
+Recent work in computational deblurring techniques have shown great promise in retrieving high quality images from such undesireable lens conditions. This project surveys three of them, mainly, Wiener Deconvoluiton, Total Variation (TV) Deconvolution with ADMM for constant PSF, and TV Deconvolution with the Douglas-Rachford algorithm for space-varying PSFs.
+
+% \subsection{The problem with simple lenses}
+% Circle of confusion -- apertures can work like low pass filters. As such, we can think of an image as a convolution of it's PSF with the scene.
+% \subsection{Image formulation}
+% We model an image $B$ as $I*K+N$
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Related Work}
+
+% Talk about and reference the following:
+% \begin{itemize}
+%     \item Base deconvolution stuff (wiener)
+%     \item ADMM Stuff \cite{ADMMBoyd} \cite{GlowinskiMarroco1975}
+%     \item Douglas-Rachford 
+%     \item Spatially variant PSF \cite{oconnor}
+%     \item other comprehensive approaches includign cross-channel terms: Imaging with Simple lenses \cite{simplelens}
+% \end{itemize}
+
+\section{Related Work}
+Image deconvolution has been an active area of research for several decades, with applications ranging from astronomical imaging to computational photography. Here we review key developments relevant to our work on recovering images from damaged phone lenses.
+
+\subsection{Classical Deconvolution}
+The foundation of image deconvolution lies in classical techniques such as Wiener filtering, which provides optimal linear filtering in the presence of additive noise. While computationally efficient, these methods often produce ringing artifacts and struggle with spatially-varying blur. Richardson-Lucy deconvolution, originally developed for astronomical imaging, offers an alternative iterative approach but similarly suffers from noise amplification and boundary artifacts \cite{Richardson:72}.
+
+\subsection{Optimization-Based Approaches}
+Modern approaches frame deconvolution as an optimization problem, typically incorporating image priors to improve robustness. These optimization problems often have dual formulations that have been extensively studied in the literature. The Alternating Direction Method of Multipliers (ADMM), originally introduced by \cite{GlowinskiMarroco1975} and re-surfaced by \cite{ADMMBoyd}, has emerged as a powerful framework for solving these problems efficiently. 
+
+Chambolle and Pock \cite{Chambolle2011AFP} introduced a first-order primal-dual algorithm that provides an alternative optimization framework, offering theoretical guarantees and practical efficiency for imaging problems. Their work has been influential in developing algorithms for various image processing tasks, including deconvolution with multi-channel priors.
+
+\subsection{Spatially-Varying Deconvolution}
+The challenge of spatially-varying PSFs has been addressed by several researchers. O'Connor and Vandenberghe \cite{oconnor} presented a comprehensive approach using the Douglas-Rachford algorithm, demonstrating its effectiveness for space-varying kernels. Their method is particularly relevant for our work as it handles the varying blur patterns typical of damaged lenses.
+
+\subsection{Computational Imaging through Simple Lenses}
+Heide et al.\ \cite{simplelens} extend on Optimization-Based Approaches and Spatially-Varying Deconvolution by including cross-channel loss terms to account for chromatic aberration, based on the First-Order Primal-Dual algorithm introduced by Chambolle and Pock\cite{Chambolle2011AFP}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Background}
+
+\subsection{Imaging Model}
+The image capturing process is modeled as a convolution of the ground truth image $i$ with a PSF kernel $k$, usually modeled as a circular low-pass filter, with additive noise $n$ due to in-camera processes such as the conversion of the original analog signal to digital data.  name the resulting blurry image $b$:
+$$b = i*k + n$$
+This can be equivalently expressed as a matrix-vector problem by letting $\mathbf{b}$, $\mathbf{i}$ and $\mathbf{k}$ be the vectorized forms of $b$, $i$ and $k$ respectively. The convolution operation can then be expressed as multiplication with a matrix $K$ constructed from the kernel $\mathbf{k}$ where row of $K$ represents the kernel centered at a different pixel position. This gives us:
+$$\mathbf{b} = K\mathbf{i} + \mathbf{n}$$
+Finally, we can write an equivalent representation of the imaging model with the Convolution Theorem as
+$$\mathcal{F}\{b\} = \mathcal{F}\{i\}\mathcal{F}\{k\} + n$$
+\subsection{The Deconvolution Problem}
+The deconvolution problem, at its core, involves retrieving the ground truth image $i$ from a convolved image $b$. This can be done in a \textit{blind} setting, where the kernel $k$ is unknown, or in a \textit{non-blind} setting, where $k$ is known. This project tackles the latter, where the PSF is known. 
+
+One key observation is that with a known PSF $k$, in a noise-free setting, frequency domain representation allows us to directly unfilter an image $b$ to retrieve the ground truth image $i$:
+\begin{align*}
+    b = i*k &\triangleq \mathcal{F}\{b\} = \mathcal{F}\{i\}\mathcal{F}\{k\}\\
+    &\Rightarrow \mathcal{F}\{i\} = \frac{\mathcal{F}\{b\}}{\mathcal{F}\{k\}}\\
+    &\Rightarrow i = \mathcal{F}^{-1}\left\{\frac{\mathcal{F}\{b\}}{\mathcal{F}\{k\}}\right\}
+\end{align*}
+However, such scenarios are unrealistic, and implementing the above equation in a real world setting with noise produces bad results (see Appendix~\ref{app:naive}). To tackle this issue, image priors can be added to the problem in order to increase robustness. This is done in Wiener Deconvolution by taking into account signal-to-noise ratios (SNR) at different frequencies computed thorugh natural image statistics.
+
+In general, we express deconvolution as a constrained least-squares reconstruction problem, where the reconstructed image is regularized to have sparse gradients, common with natural images. More formally, we write the problem as 
+$$\hat{i} = \mathop{\mathrm{argmin}}\limits_{x}\|Kx-b\|_2^2 + \lambda\|\nabla x\|_n^n $$
+Where $K$ is the matrix-vector representation of the convolution with the kernel $k$. 
+In this project, we use the Total Variation (TV) constraint, which sets out to minimize the L1 norm of the image's gradient.
+\subsection{ADMM}
+The Alternating-Direction Method of Multipliers (ADMM) is a general framework for solving minimization problems in the form of
+\begin{align*}
+    \text{minimize}~~ &f(x) + g(z)\\
+    \text{subject to}~ &Ax + Bz = c
+\end{align*}
+
+The ADMM algorithm is used to solve problems in this form iteratively and efficiently by introducing a dual variable $y$ that splits $f(x)$ and $g(z)$ into independent problem. This strucutre is usually exploited by formulating $f$ and $g$ such that their proximal operators are computationally cheap, allowing for low complexity operations within the iterative loop.
+
+\subsection{ADMM-based deconvolution}
+The deconvolution problem stated in Section 3.1 can be converted into an ADMM problem as:
+\begin{align*}
+    &f(x) = \frac{1}{2}\|Kx - b\|_2^2 \\
+    &g(z) = \lambda \|z \|_1\\
+    &A = \nabla, B=-I, c=0
+\end{align*}
+
+With this formulation, the objective can be minimized through the following algorithm: 
+\begin{algorithm}
+\caption{ADMM-TV for Deconvolution with constant PSF}
+\begin{algorithmic}[1]
+\State \textbf{Initialize:} $x^0 = 0$, $z^0 = 0$, $u^0 = 0$
+\For{$k = 0, 1, \ldots, N-1$}
+    \State $v^k \leftarrow z^k - u^k$
+    \State $x^{k+1} \leftarrow \text{proximal}_x(v^k)$
+    \State $v^k \leftarrow \nabla x^{k+1} + u^k$
+    \State $z^{k+1} \leftarrow \text{proximal}_z(v^k)$
+    \State $u^{k+1} \leftarrow u^k + \nabla x^{k+1} - z^{k+1}$
+\EndFor
+\State \textbf{return} $x^N$
+\end{algorithmic}
+\end{algorithm}
+
+The proximal operators for this formulation of the deconvolution problem have efficient closed-form solutions:
+
+\begin{itemize}
+    \item $\text{proximal}_x(v)$ is an unfiltering operation:
+    $$x^{k+1} = \mathcal{F}^{-1}\left\{\frac{\mathcal{F}\{K\}^*\mathcal{F}\{b\} + \rho(\mathcal{F}\{\nabla_x\}^*\mathcal{F}\{v_1\} + \mathcal{F}\{\nabla_y\}^*\mathcal{F}\{v_2\})}{\mathcal{F}\{K\}^*\mathcal{F}\{K\} + \rho(\mathcal{F}\{\nabla_x\}^*\mathcal{F}\{\nabla_x\} + \mathcal{F}\{\nabla_y\}^*\mathcal{F}\{\nabla_y\})}\right\}$$
+    Note that the only values computed per iteration are $\mathcal{F}\{v_1\}$ and $\mathcal{F}\{v_2\}$, all other values can be pre-computed to incrase the efficiency.
+    \item $\text{proximal}_z(v)$ is the soft-thresholding operator with threshold $\lambda/\rho$:
+    $$z^{k+1} = \text{sign}(v)\max(|v| - \lambda/\rho, 0)$$
+\end{itemize}
+
+\subsection{Douglas-Rachford Splitting}
+The Douglas-Rachford Splitting algorithm (DR) has a slightly different setup than ADMM. In it, we set to 
+\begin{align*}
+  \text{minimize}~~ &f(x) + g(z)\\
+  \text{subject to}~ &Ax = z
+\end{align*}
+This is quite similar to the ADMM formulation. Like it, we use a dual variable $y$ to split and connect $x$ and $z$, and employ an iterative approach to the optimization.
+
+\subsection{Spatially-Varying PSF Deconvolution}
+We follow the Nagy-O'Leary \cite{nagyoleary} formulation for Spatially-Varying PSFs in the implemented deconvolution approach, mainly,
+$$K = \sum_{p=1}^PU_pK_p$$
+where $K$ is the matrix representation of the spatial PSF kernel, with each $K_p$ representing the constant PSF for a given patch of the image $p$, and each $U_p$ being a diagonal matrix that weights how much different pixels are affected by different kernels. With this model, we can express the deconvolution problem as a DR problem as
+\begin{align*}
+  \text{minimize}~~ \frac{1}{2}\|Kx - b\|_2^2 + \lambda\|\nabla x\|_1\\
+\end{align*}
+The key insight is that with the Nagy-O'Leary model, the fidelity term can be split into independent parts in the context of a DR problem, by letting
+\begin{align*}
+  f(x) &= 0\\
+  g(z_1,\ldots,z_P, w) &= \frac{1}{2}\|U_1z_1 + \cdots + U_Pz_P\|_2^2 + \lambda\|w\|_1\\
+  A &= [K_1, \ldots, K_P, \nabla]
+\end{align*}
+Where
+\begin{align*}
+  Ax = [K_1x, \ldots, K_Px, \nabla x]
+\end{align*}
+meaning that a solution that minimizes $f(x)+g(z)$ where $Ax = z$ minimizes 
+$$0 + g(Ax) = \frac{1}{2}\|U_1K_1x + \ldots + U_PK_Px\|_2^2 = \frac{1}{2}\|Kx-b\|_2^2 + \lambda\|\nabla x\|$$
+
+The iterative solver is closely adapted from the original author's of \cite{oconnor} MATLAB implementation\footnote{\url{https://github.com/danielvoconnor/TV_deblur_spaceVariantKernel/blob/master/tvDeblur_varBlur_freeBCs_DR.m}}
+
+\section{Methods}
+The main challenges of this project were to implement the algorithm outlined in section 5.4 of \cite{simplelens} and to accurately record the spatially varying PSF of my phone's damaged lens. 
+
+\subsection{Algorithm implementation}
+All of the code used in this project can be found in the following \href{https://github.com/fzmautner/463-final-project}{open sourced repository}\footnote{\url{https://github.com/fzmautner/463-final-project}}. I implemented the discussed algorithms in Python making use of SciPy\footnote{\url{https://scipy.org/}}, NumPy\footnote{\url{https://numpy.org/}} and OpenCV\footnote{\url{https://opencv.org/}}. Usage and more implementation detail can be found at the repository.
+
+As previously mentioned, the Python implementation of the Douglas-Rachford TV deconvolution is heavily based on O'Connor and Vandenberghe's MATLAB implementation, including greater detail not explicitly described in paper. For a more involved discussion of the implementation, see Appendix \ref{app:implementation}.
+\subsection{PSF estimation}
+Using a linear stage, I translated a point light source relative to the camera's optical center and recorded its PSF directly on smaller patches of the image. This was especially complicated as the camera in question had a wide angle field of view of 120 degrees, making it difficult to translate the light source and camera without loosing light. To account for this, I normalized all PSFs equally. The resulting PSF measurement can be seen in Figure~\ref{fig:phone-psf}.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.6\linewidth]{figs/phone_psf.png}
+  \caption{$3\times 3$ grid of Spatially-Varying PSF of my damaged phone's lens}
+  \label{fig:phone-psf}
+\end{figure}
+
+\section{Results}
+Comparison of runtime and quantitative quality metrics for single PSF vs. spatially-varying PSF.
+Qualitative comparison of methods
+
+In order to evaluate the presented algortihms, synthetic data was manufactured to model the constant PSF case and the spatially-varying PSF case. 
+
+\subsection{Spatially-Invariant PSF}
+This section evaluates the performance of the ADMM-TV algorithm and compares it to a baseline Wiener Deconvolution approach. The ADMM-TV algorithm shows significant improvement over Wiener deconvolution in both noise handling and edge preservation, as shown in Figure~\ref{fig:admm-res}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figs/ADMM-res.png}
+  \caption{Left: Original image. Middle: Image with gaussian blur and noise. Right: Image recovered with ADMM-TV deconvolution after 30 iterations.}
+  \label{fig:admm-res}
+\end{figure}
+
+A quick comparison to an off-the-shelf Wiener deconvolution method by scikit-image (with the same PSF) reveals, as expected, better qualitative performance by ADMM-TV, avoiding the artifacts seen in the Wiener deconvolved image while maintaining detail restoration.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figs/wiener_baseline.png}
+  \caption{Left: Image recovered with ADMM-TV deconvolution after 30 iterations. Right: Image recovered with \texttt{skimage.restoration.wiener} with the best balance parameter.}
+  \label{fig:admm-wiener}
+\end{figure}
+
+
+The regularization parameter $\lambda$ plays a crucial role in the quality of reconstruction. Higher values of $\lambda$ result in smoother images with less noise but at the cost of losing fine detail, while lower values preserve more detail but may amplify noise. Figure~\ref{fig:lambda-comp} demonstrates this tradeoff across different $\lambda$ values.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figs/ADMM-lmdacomp.png}
+  \caption{Effect of different $\lambda$ values on reconstruction quality. Left: $\lambda=0.1$ showing over-smoothing. Middle: $\lambda=0.01$ balancing detail and noise. Right: $\lambda=0.001$ preserving detail but amplifying noise.}
+  \label{fig:lambda-comp}
+\end{figure}
+
+ADMM-TV's efficient runtime allows for channel-wise deblurring of color images with minimal computational overhead. The runtime of ADMM-TV is discussed alongside that of DR-TV in Section ~\ref{sec:drtv}. Figure~\ref{fig:color-admm} shows the algorithm's effectiveness on color images.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figs/ADMM-color.png}
+  \caption{Color image deconvolution. Left: Original color image. Middle: Blurred and noisy image. Right: ADMM-TV reconstruction.}
+  \label{fig:color-admm}
+\end{figure}
+
+However, the assumption that the same PSF is applied over each kernel fails to consider the effects of chromatic aberration that a real lens can cause, especially if simple or damaged. This is discussed in more detail in Section~\ref{sec:limitations} under Color and Chromatic Aberration.
+
+\subsection{Spatially-Varying PSF}\label{sec:drtv}
+This section evaluates the performance of the DR-TV algorithm and compares it to assuming an invariant PSF deconvolved with ADMM-TV.
+
+To simulate a damaged mobile phone lens, a spatially-varying PSF is designed to have local gaussian PSFs with randomly distributed standard deviations. These local PSFs are weighted at each pixel according to its distance from the center of the patch (See Appendix \ref{app:PSFModel}). Notice in Figure~\ref{fig:random_psf_blur} that the astronaut's badge remains relatively sharp while her face is heavily blurred, reflecting a wider local PSF kernel at that patch in the image.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figs/griblur.png}
+  \caption{Left: Spatially-Varying PSF with randomly distributed gaussian local PSFs. Right: Effect of varied PSF over image showing non-uniform blurring effect.}
+  \label{fig:random_psf_blur}
+\end{figure}
+
+The DR-TV algorithm is capable of retrieving significant detail in the more blurred parts of the image, and the overall result looks more consistent. However, some detail is lost, and much of the work lies in the hand of the end user's choice of hyperparameters, which can significantly affect the final result.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figs/DR-randresult.png}
+  \caption{Left: Original unblurred and image. Middle: Original image with non-local blur and gaussian noise added to it. Right: Recovered image with DR-TV after 100 iterations.}
+  \label{fig:dr-randres}
+\end{figure}
+
+In a scenario such as this, the best that ADMM-TV can do is assume a single, average PSF kernel, and treat it uniformly over the image:
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figs/DRvsADMMres.png}
+  \caption{Left: Image recovered with DR-TV. Right: Image recovered with ADMM-TV.}
+  \label{fig:dr-randres}
+\end{figure}
+
+From using a single approximate kernel for the entire image, the ADMM-TV solver is unable to reconstruct the image with spatial awareness, and the end result looks less precise than its DR-TV counterpart at similar noise levels. 
+
+However, the two algorithms vary greatly in terms of computational cost. Both were run for 100 iterations on an Apple M1 chip. The DR-TV algorithm ran for 4 minutes and 14 seconds (2.54 iterations per second), compared to just four seconds (21.51 iterations per second) for the ADMM-TV implementation. This reflects in a speedup of over $8 \times$, which while not insignificant, is much lower than $25\times$, which would reflect a naïve implementation of deconvolution with now 25 unique PSF kernels.
+
+Finally, the loss curves for each method confirm the dominance of DR-TV in this scenario:
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figs/DRvsADMM-graph.png}
+  \caption{Fidelity loss over iterations for DR-TV (blue) and ADMM-TV (orange).}
+  \label{fig:dr-randres}
+\end{figure}
+Noticeably, both methods converged at approxmiately 20 iterations, but whereas ADMM-TV plateaued, the DR-TV solution went on to slowly degrade.
+
+\subsection{Real World Spatially-Varying PSF}
+Using the same pipeline outline above, I used my phone's calibrated Spatially-Varying PSF to perform deconvolution:
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figs/mazes.png}
+  \caption{Left: Original Image captured from damaged phone lens. Right: Deconvolved image with measured Spatial PSF.}
+  \label{fig:mazes}
+\end{figure}
+
+At a first glance, the effects of deconvolution aren't very noticeable. This is liekly due to an innacurate PSF measurement or suboptimal hyperparameters. Taking a closer look at the corners, where the blur is strongest, however, indicates an improved image with less noise:
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figs/window.png}
+  \caption{Left: Zoom in in Original Image. Right: Zoom in in Deconvolved image.}
+  \label{fig:dr-randres}
+\end{figure}
+
+\section{Limitations and Future work}
+While the methods presented in this work show promising results for deblurring images with various PSFs, there are several limitations and opportunities for future work:
+
+\subsection{Color and Chromatic Aberration}\label{sec:limitations}
+The current implementation processes works on single channel images, and color images can be composed by independently deconvoluting each channel. The implicit assumption that the PSF is constant under differnt channels does not reflect real world conditions, where the wavelength of incoming light plays an important role in the lens' PSF. This is particularly limiting when dealing with chromatic aberration, which is especially common in simple, cheap lenses. For a more complete treatment of color in spatially-varying deblurring, see \cite{simplelens}.
+
+\subsection{Future Directions}
+Several promising directions could extend this work:
+
+\begin{itemize}
+    \item \textbf{Machine Learning Integration}: Recent work has shown success incorporating deep neural networks into traditional optimization frameworks. (CITE some).
+    
+    \item \textbf{Automated PSF Estimation}: The current approach requires manual PSF measurement. An automated method to estimate the spatially-varying PSF directly from blurred images would make the technique more practical.
+    
+    \item \textbf{Blind Deconvolution}: The current approach relies on the user knowing the PSF of their lens. This may not always be practial, especially in commercial applciations such as damaged mobile camera imaging enhancement. As such, blind deconvolution approaches such as (CITE 3 or so) may be more appropriate.
+    
+    \item \textbf{Real-time Processing}: The iterative nature of the algorithm makes it computationally intensive. Exploring parallel implementations or more efficient optimization techniques could enable real-time applications.
+\end{itemize}
+
+\begin{acks}
+I would like to thank Professor Gkioulekas and Dorian Chan for their teaching and guideance throughout the semester. I would also like to thank O'Connor and Vandenberghe for open-sourcing their DR-TV implementation.
+\end{acks}
+
+%%
+%% The next two lines define the bibliography style to be used, and
+%% the bibliography file.
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{citations}
+
+
+%%
+%% If your work has an appendix, this is the place to put it.
+\clearpage
+\appendix
+
+\section{Naïve Unfiltering and Wiener Deconvolution}\label{app:naive}
+Even with minimal added noise and blur, Naïve deconvolution by unfiltering rarely works, as illustrated below:
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figs/naive.png}
+  \caption{Naïve unfiltering results. Top Left: Fourier Transform of original blurry image. Top Right: Fourier Trandform of PSF. Bottom Left: Fourier transform of unfiltering. Bottom Right: Inverse Fourier Transform of unfiltered image.}
+  \label{fig:naive}
+\end{figure}
+
+
+\section{More Results}
+\subsection{DR-TV}
+One intersting Space-Varying PSF to model is that of a simple lens that suffers from geometric distortion. This type of aberration manifests as objects near the edges of the image appearing stretched out. We can simulate this effect using a Non-Local PSF by simply stretching out the local gaussian kernels proportionally to their distance from the center of the PSF grid:
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\linewidth]{figs/radialpsf.png}
+  \caption{Radially distorted PSF grid}
+  \label{fig:radialpsf}
+\end{figure}
+
+Applying this to the image:
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\linewidth]{figs/radialdist.png}
+  \caption{Radially distorted and blurred image}
+  \label{fig:radialdist}
+\end{figure}
+
+DR-TV is able to successfully recover the original image:
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figs/radial_res.png}
+  \caption{Left: Original. Middle: Radially distorted and noisy image. Right: Recovered}
+  \label{fig:radialrescomp}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\linewidth]{figs/radialonly.png}
+  \caption{Isolated reconstructed image.}
+  \label{fig:radialresone}
+\end{figure}
+
+
+
+\section{Implementation Details}
+
+\subsection{PSF Modelling}\label{app:PSFModel}
+Unlike \cite{oconnor}, which uses a mostly rectangular weighing function for image patches, the weights used in this project follow a natural decay estabilished as a function of the distance of a pixel to the center of the local PSF's patch. This is illustrated below:
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figs/weights.png}
+  \caption{Weight matrices $U$ for different local PSFs}
+  \label{fig:dr-randres}
+\end{figure}
+
+\subsection{Algorithm Implementation}\label{app:implementation}
+
+The Douglas-Rachford splitting algorithm was implemented in Python following O'Connor and Vandenberghe's original MATLAB code. The algorithm requires careful handling of boundary conditions, using circular boundary conditions for the convolution operations and thus requiring zero-pading to the image during the deconvolution process. This is handled internally and the padding size is computed as half of the a local PSF's size.
+
+
+\end{document}
+\endinput
+%%
+%% End of file `sample-sigconf.tex'.

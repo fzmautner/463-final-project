@@ -1,0 +1,7 @@
+report/*
+!report/*.tex
+!report/*.pdf
+!report/*.bib
+.DS_Store
+src/__pycache__
+results/dr-astronaut
